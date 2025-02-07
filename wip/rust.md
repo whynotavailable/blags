@@ -1,6 +1,8 @@
+# An Introduction To Rust
+
 Rust is an interesting problem.
 
-It's a programming languages with a lot of problems. Two of them are what I believe are the biggest.
+It's a programming languages with a lot of issues. Two of them are what I believe are the biggest.
 
 1. The Rust committee is made up of morons.
 1. The language is hard, and the docs are terrible in fixing it.
@@ -10,6 +12,8 @@ already familiar with web development. If you are not already rather familiar wi
 another language like Java or C#.
 
 ______________________________________________________________________
+
+Unlike go, we need to start with some language basics.
 
 ## The Borrow Checker
 
@@ -138,5 +142,9 @@ let t = TestThing::new("dave");
 TestThing::print(&t);
 ```
 
-This means that if self isn't a pointer, it will consume the object. This can be slightly confusing to think that an
-instance method can consume the object, but that's because it's not an instance method, those don't exist.
+This means that if `self` isn't a pointer, it will consume the object. It can be slightly confusing to think that an
+instance method can consume the object, but that's because it's not an instance method, those don't exist in Rust.
+
+## Traits
+
+Traits are kind of like interfaces in reverse.
