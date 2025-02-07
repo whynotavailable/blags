@@ -83,21 +83,21 @@ Here is an example in C of how you can simulate instance methods.
 #include <stdio.h>
 
 struct example {
-  char *data;
+    char *data;
 };
 
 struct example example_new(char *data) {
-  struct example ret;
-  ret.data = data;
-
-  return ret;
+    struct example ret;
+    ret.data = data;
+    
+    return ret;
 }
 void example_print(struct example *self) { printf("hi %s\n", self->data); }
 
 int main() {
-  struct example hi = example_new("dave");
+    struct example hi = example_new("dave");
 
-  example_print(&hi);
+    example_print(&hi);
 }
 ```
 
@@ -124,7 +124,7 @@ impl TestThing {
 Rust has similar constraints to C in that you cannot overload functions, and since it doesn't have object, uses basic
 methods to instantiate an object. `impl` allows you to implement functions for a struct. In the context of an impl there
 are two important notes. The first is that `Self` is shorthand for what the impl type is. The second is that if you use
-`self` or `&self`, you can then call that function as if it were an instance method.
+`self` or `&self` as the first parameter, you can then call that function as if it were an instance method.
 
 ```rust
 let t = TestThing::new("dave");
