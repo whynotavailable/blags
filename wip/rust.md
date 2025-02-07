@@ -65,7 +65,7 @@ variable. Simple situations like this can elide the lifetimes making them option
 
 What this means is simple, you can only have one **hard** instance of the variable, but can pass around references as
 long as the original ownership is still in scope. There is one situation where this isn't the case. If you need multiple
-primary references to a thing, you can use an `Rc`. `Rc` is a reference counting container. You close the container, and
+primary references to a thing, you can use an `Rc`. `Rc` is a reference counting container. You clone the container, and
 it ticks up a number, when the container goes out of scope it ticks down. Once all references are gone the container is
 properly deleted.
 
@@ -196,4 +196,4 @@ anything that's a string for the constructor.
 The magic of Rust is that since you do not need to declare an interface ahead of time for an object (again similar to
 go), you can implement them for objects you didn't create. As long as either the trait, or the struct are defined in
 your module, you can implement traits for that struct. Traits are used like this all the time for building abstractions.
-We'll get to one of my favorites `IntoResponse` in a bit.
+We'll get to one of my favorites `IntoResponse` later in this document.
