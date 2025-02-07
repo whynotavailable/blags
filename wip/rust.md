@@ -186,5 +186,14 @@ impl<T: ToString> StringLike for T {
 }
 ```
 
-This is very common. `ToString` itself is rarely implemented. Most of the time you implement `Display`, for which there
-is a blanket `ToString` implementation.
+This is very common. `ToString` itself is rarely implemented directly. Most of the time you implement `Display`, for
+which there is a blanket `ToString` implementation.
+
+Traits are one of the two abstract data type (ADT) methods in Rust. Similar to object oriented programming (OOP)
+languages, traits are often used to abstract things away. In one of the above methods, it uses `impl ToString` to allow
+anything that's a string for the constructor.
+
+The magic of Rust is that since you do not need to declare an interface ahead of time for an object (again similar to
+go), you can implement them for objects you didn't create. As long as either the trait, or the struct are defined in
+your module, you can implement traits for that struct. Traits are used like this all the time for building abstractions.
+We'll get to one of my favorites `IntoResponse` in a bit.
