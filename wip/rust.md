@@ -18,7 +18,8 @@ Unlike go, we need to start with some language basics.
 ## The Borrow Checker
 
 The obvious first thing to talk about is the borrow checker. Memory safety is a major part of why the language is
-"semi"-popular nowadays. It can be hard to wrap one's head around. Here's a quick example of something you **can't** do.
+"semi"-popular nowadays, but it can be hard to wrap one's head around. Here's a quick example of something you **can't**
+do.
 
 ```rust
 fn print(s: String) {
@@ -121,10 +122,11 @@ impl TestThing {
 }
 ```
 
-Rust has similar constraints to C in that you cannot overload functions, and since it doesn't have object, uses basic
-methods to instantiate an object. `impl` allows you to implement functions for a struct. In the context of an impl there
-are two important notes. The first is that `Self` is shorthand for what the impl type is. The second is that if you use
-`self` or `&self` as the first parameter, you can then call that function as if it were an instance method.
+Rust has similar constraints to C in that you cannot overload functions, and since it doesn't have objects, uses static
+methods to instantiate an object. The convention is to name the method `new`. `impl`allows you to implement functions
+for a struct. In the context of an impl there are two important notes. The first is that`Self`is shorthand for what the
+impl type is. The second is that if you use`self`or`&self` as the first parameter, you can then call that function as if
+it were an instance method.
 
 ```rust
 let t = TestThing::new("dave");
@@ -142,9 +144,47 @@ let t = TestThing::new("dave");
 TestThing::print(&t);
 ```
 
-This means that if `self` isn't a pointer, it will consume the object. It can be slightly confusing to think that an
-instance method can consume the object, but that's because it's not an instance method, those don't exist in Rust.
+This means that if `self` isn't a pointer, it will consume the object. It can be confusing that an instance method could
+consume the object, but that's because it's not an instance method, those don't exist in Rust.
 
 ## Traits
 
-Traits are kind of like interfaces in reverse.
+Traits are kind of like interfaces in reverse. With an interface, you define the interface first, and then you implement
+that interface with the object. The interface is kind of like a blueprint for the object.
+
+One problem with interfaces is that you can have multiple implemented by the same object. If you have multiple
+interfaces that define the same method (or even method name), you now have a problem. As stated before, Rust doesn't
+support overloading.
+
+Instead the solution is traits. A trait by itself is effectively an interface. You can define the trait, with methods.
+Here's an example of a basic trait (one that's relatively useless in the real world).
+
+```rust
+trait StringLike {
+    fn stringify(&self) -> String;
+}
+```
+
+You then can create an implementation for your trait.
+
+```rust
+impl StringLike for TestThing {
+    fn stringify(&self) -> String {
+        self.data.clone()
+    }
+}
+```
+
+Note that I'm cloning this here, that's because another implementation basically makes it required. That implementation
+is more generic. One piece of magic in rust is that you can implement a trait based off of a trait. Here's an example.
+
+```rust
+impl<T: ToString> StringLike for T {
+    fn stringify(&self) -> String {
+        self.to_string()
+    }
+}
+```
+
+This is very common. `ToString` itself is rarely implemented. Most of the time you implement `Display`, for which there
+is a blanket `ToString` implementation.
