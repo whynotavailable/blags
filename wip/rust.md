@@ -150,7 +150,7 @@ consume the object, but that's because it's not an instance method, those don't 
 ## Traits
 
 Traits are kind of like interfaces in reverse. With an interface, you define the interface first, and then you implement
-that interface with the object. The interface is kind of like a blueprint for the object.
+that interface with the object. The interface is kind of like a contract for the object.
 
 One problem with interfaces is that you can have multiple implemented by the same object. If you have multiple
 interfaces that define the same method (or even method name), you now have a problem. As stated before, Rust doesn't
@@ -197,3 +197,21 @@ The magic of Rust is that since you do not need to declare an interface ahead of
 go), you can implement them for objects you didn't create. As long as either the trait, or the struct are defined in
 your module, you can implement traits for that struct. Traits are used like this all the time for building abstractions.
 We'll get to one of my favorites `IntoResponse` later in this document.
+
+## Results
+
+Rust does not have exceptions. Instead it has the `Result` tagged union. It looks something like this underneath the
+hood.
+
+```rust
+enum Result<TOk, TErr> {
+    Ok(TOk),
+    Err(TErr),
+}
+```
+
+It's a normal enum with two options, both of which are typed and have a single value. The *real* `Result` type has a
+bunch of helper methods and shortcuts, but at the end of the day it's a pretty basic concept.
+
+The first type represents the value type, and the second, an error type. It can be one of the two options. As in either
+`Ok` or `Err`.
