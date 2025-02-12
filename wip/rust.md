@@ -15,7 +15,7 @@ ______________________________________________________________________
 
 Unlike go, we need to start with some language basics.
 
-## Computer Memory
+## The Roots
 
 There exists a need to start with something much more fundamental to computer science **before** we get into the borrow
 checker. I will not be going into great detail here, just enough to make things understandable later.
@@ -29,11 +29,15 @@ that, you dynamically allocate for your memory, and you put the location on the 
 If you require something like `malloc` or `new`, and need to subsequently `free` that memory it's the heap, otherwise
 it's the stack.
 
+Another important topic to cover is *pass by value* and *pass by reference*. Generally if you don't pass a pointer to a
+function, the variable is copied to pass into the function. This also happens if you pass a reference, it's just the
+thing that gets copied is an address.
+
 ## The Borrow Checker
 
-The obvious first thing to talk about is the borrow checker. Memory safety is a major part of why the language is
-"semi"-popular nowadays, but it can be hard to wrap one's head around. Here's a quick example of something you **can't**
-do.
+The obvious first thing to talk about more properly is the borrow checker. Memory safety is a major part of why the
+language is "semi-popular" nowadays, but it can be hard to wrap one's head around. Here's a quick example of something
+you **can't** do.
 
 ```rust
 fn print(s: String) {
@@ -50,7 +54,21 @@ fn main() {
 The reason is that variables can only have one owner. Giving it to the function means that the function now owns that
 variable, and when the function leaves scope, the variable is deleted.
 
-To fix it you take a reference of the string and pass that instead.
+It's easy to ask "why"? In this case the `String` isn't a pointer. It should be passed by value and copied. Why do you
+need to lose ownership if all you are doing is passing a copy?
+
+The answer is one of the core complexities of why the borrow checker exists. `String` contains data which is dynamically
+allocated on the heap. You can append content directly to a `mut String`. When you are dealing with data on the heap, if
+you simply allow a copy of that structure, you would have two distinct references to a memory location on the heap. When
+those objects go out of scope, they would both try and free that same allocated memory. Doing so would crash your
+program.
+
+Anything that doesn't either directly manage heap memory, or have a property in it's tree of properties, will implement
+the `Copy` trait. Implementing the copy trait means you will actually pass by value. If you do not implement the copy
+trait, the calling function actually gets a reference. Even if you don't pass a pointer. The compiler will give
+ownership on the stack to the new function.
+
+To fix the above issue you take a reference of the string and pass that instead.
 
 ```rust
 fn print(s: &String) {
