@@ -15,6 +15,20 @@ ______________________________________________________________________
 
 Unlike go, we need to start with some language basics.
 
+## Computer Memory
+
+There exists a need to start with something much more fundamental to computer science **before** we get into the borrow
+checker. I will not be going into great detail here, just enough to make things understandable later.
+
+There exists two ways of allocating memory (as far as common programming) is concerned. The stack is a last in first out
+(LIFO) block of memory that is managed entirely by compilers. The heap is random access dynamic memory managed generally
+by software. The stack is faster, but comes with some limitations. Since it's managed at compile time, it means that you
+cannot have anything in the stack which has an unknown size. A growable list is an example. If you have anything like
+that, you dynamically allocate for your memory, and you put the location on the stack (making it an indirect lookup).
+
+If you require something like `malloc` or `new`, and need to subsequently `free` that memory it's the heap, otherwise
+it's the stack.
+
 ## The Borrow Checker
 
 The obvious first thing to talk about is the borrow checker. Memory safety is a major part of why the language is
