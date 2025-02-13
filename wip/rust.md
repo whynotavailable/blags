@@ -54,7 +54,7 @@ fn main() {
 The reason is that variables can only have one owner. Giving it to the function means that the function now owns that
 variable, and when the function leaves scope, the variable is deleted.
 
-It's easy to ask "why"? In this case the `String` isn't a pointer. It should be passed by value and copied. Why do you
+It's easy to ask "why?" In this case the `String` isn't a pointer. It should be passed by value and copied. Why do you
 need to lose ownership if all you are doing is passing a copy?
 
 The answer is one of the core complexities of why the borrow checker exists. `String` contains data which is dynamically
@@ -66,7 +66,8 @@ program.
 Anything that doesn't either directly manage heap memory, or have a property in it's tree of properties, will implement
 the `Copy` trait. Implementing the copy trait means you will actually pass by value. If you do not implement the copy
 trait, the calling function actually gets a reference. Even if you don't pass a pointer. The compiler will give
-ownership on the stack to the new function.
+ownership on the stack to the new function. This can be proven by taking a pointer before and after a move with a
+non-`Copy` struct.
 
 To fix the above issue you take a reference of the string and pass that instead.
 
@@ -82,9 +83,9 @@ fn main() {
 }
 ```
 
-What the docs will say is that taking and passing a reference is how to borrow variables. This I think is where the docs
-need to be more clear. It's not that a reference is how you borrow things. Lifetimes are how you borrow things, and you
-can only apply a lifetime to a pointer. Here's a filled out version of the previous function with the lifetime intact.
+This enables your use of the borrow checker. When dealing with non-`Copy` taking a reference, or doing a move is
+effectively the same thing, the intentions are different. Taking a reference means you intend to borrow. This is where
+lifetimes come in. Here's a copy of the above function with lifetimes added.
 
 ```rust
 fn print<'a>(s: &'a String) {
