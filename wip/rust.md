@@ -20,7 +20,7 @@ Unlike go, we need to start with some language basics.
 There exists a need to start with something much more fundamental to computer science **before** we get into the borrow
 checker. I will not be going into great detail here, just enough to make things understandable later.
 
-There exists two ways of allocating memory (as far as common programming) is concerned. The stack is a last in first out
+There exists two ways of allocating memory (as far as common programming is concerned). The stack is a last in first out
 (LIFO) block of memory that is managed entirely by compilers. The heap is random access dynamic memory managed generally
 by software. The stack is faster, but comes with some limitations. Since it's managed at compile time, it means that you
 cannot have anything in the stack which has an unknown size. A growable list is an example. If you have anything like
@@ -30,14 +30,14 @@ If you require something like `malloc` or `new`, and need to subsequently `free`
 it's the stack.
 
 Another important topic to cover is *pass by value* and *pass by reference*. Generally if you don't pass a pointer to a
-function, the variable is copied to pass into the function. This also happens if you pass a reference, it's just the
-thing that gets copied is an address.
+function, the variable is copied to pass into the function. This also happens if you pass a reference, in that case what
+gets copied is an address.
 
 ## The Borrow Checker
 
-The obvious first thing to talk about more properly is the borrow checker. Memory safety is a major part of why the
-language is "semi-popular" nowadays, but it can be hard to wrap one's head around. Here's a quick example of something
-you **can't** do.
+The obvious first thing to talk about properly is the borrow checker. Memory safety is a major part of why the language
+is "semi-popular" nowadays, but it can be hard to wrap one's head around. Here's a quick example of something you
+**can't** do.
 
 ```rust
 fn print(s: String) {
@@ -67,9 +67,11 @@ Anything that doesn't either directly manage heap memory, or have a property in 
 the `Copy` trait. Implementing the copy trait means you will actually pass by value. If you do not implement the copy
 trait, the calling function actually gets a reference. Even if you don't pass a pointer. The compiler will give
 ownership on the stack to the new function. This can be proven by taking a pointer before and after a move with a
-non-`Copy` struct.
+non-`Copy` struct. If you change the above code to `u32` instead of `String`, it will compile, since `u32` implements
+the `Copy` trait.
 
-To fix the above issue you take a reference of the string and pass that instead.
+All pointers also implement the `Copy` trait, so to fix the above issue you take a reference of the string and pass that
+instead.
 
 ```rust
 fn print(s: &String) {
@@ -99,12 +101,13 @@ What this means is simple, you can only have one **hard** instance of the variab
 long as the original ownership is still in scope. There is one situation where this isn't the case. If you need multiple
 primary references to a thing, you can use an `Rc`. `Rc` is a reference counting container. You clone the container, and
 it ticks up a number, when the container goes out of scope it ticks down. Once all references are gone the container is
-properly deleted.
+properly deleted. Note that the contents of an `Rc` and other similar containers are allocated exclusively on the heap.
 
 I've not used the regular `Rc`. `Arc` is much more common in web dev, as it's a thread safe reference counter used for
 shared state like database connection pools.
 
-There's some additional nuance when it comes to instance methods, mostly because they don't actually exist.
+There's some additional nuance around moving ownership when it comes to instance methods, but that's mostly because they
+don't actually exist.
 
 ## Data Structures
 
