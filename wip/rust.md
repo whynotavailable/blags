@@ -83,9 +83,8 @@ fn main() {
 }
 ```
 
-This enables your use of the borrow checker. When dealing with non-`Copy` taking a reference, or doing a move is
-effectively the same thing, the intentions are different. Taking a reference means you intend to borrow. This is where
-lifetimes come in. Here's a copy of the above function with lifetimes added.
+This enables your use of the borrow checker. Taking a reference means you intend to borrow. This is where lifetimes come
+in. Lifetimes are how you track what currently owns a pointer. Here's a copy of the above function with lifetimes added.
 
 ```rust
 fn print<'a>(s: &'a String) {
@@ -105,8 +104,7 @@ properly deleted.
 I've not used the regular `Rc`. `Arc` is much more common in web dev, as it's a thread safe reference counter used for
 shared state like database connection pools.
 
-There's some additional nuance when it comes to instance methods, mostly because they don't actually exist, but that's
-next.
+There's some additional nuance when it comes to instance methods, mostly because they don't actually exist.
 
 ## Data Structures
 
@@ -135,7 +133,7 @@ int main() {
 }
 ```
 
-Both go and rust use a similar style, though they both better simulate instance methods.
+Both go and rust use a similar style, though they both simulate instance methods better.
 
 ```rust
 struct TestThing {
